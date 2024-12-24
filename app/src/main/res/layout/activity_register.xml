@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -5,25 +6,55 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Prénom -->
     <EditText
-        android:id="@+id/nameInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name" />
+        android:id="@+id/firstnameInput"
+        android:layout_width="381dp"
+        android:layout_height="75dp"
+        android:hint="First Name"
+        android:inputType="textPersonName" />
 
+    <!-- Nom -->
+    <EditText
+        android:id="@+id/lastnameInput"
+        android:layout_width="381dp"
+        android:layout_height="69dp"
+        android:hint="Last Name"
+        android:inputType="textPersonName" />
+
+    <!-- Adresse -->
+    <EditText
+        android:id="@+id/addressInput"
+        android:layout_width="381dp"
+        android:layout_height="74dp"
+        android:hint="Address"
+        android:inputType="textPostalAddress" />
+
+    <!-- Numéro de téléphone -->
+    <EditText
+        android:id="@+id/phonenumberInput"
+        android:layout_width="380dp"
+        android:layout_height="83dp"
+        android:hint="Phone Number"
+        android:inputType="phone" />
+
+    <!-- Email -->
     <EditText
         android:id="@+id/emailInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:layout_width="380dp"
+        android:layout_height="80dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
 
+    <!-- Mot de passe -->
     <EditText
         android:id="@+id/passwordInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="380dp"
+        android:layout_height="84dp"
         android:hint="Password"
         android:inputType="textPassword" />
 
+    <!-- Bouton d'inscription -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
