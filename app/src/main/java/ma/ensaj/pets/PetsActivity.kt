@@ -58,7 +58,8 @@ class PetsActivity : AppCompatActivity() {
         petsAdapter = PetsAdapter(
             petsList = emptyList(),
             onEditClick = { pet -> navigateToEditPet(pet) },
-            onDeleteClick = { pet -> confirmDeletePet(pet) }
+            onDeleteClick = { pet -> confirmDeletePet(pet) },
+            onPetClick = { pet -> navigateToVaccinations(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
         )
         petsRecyclerView.adapter = petsAdapter
 
@@ -103,10 +104,16 @@ class PetsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun navigateToVaccinations(pet: Pet) {
+        val intent = Intent(this, MedicationsActivity::class.java)
+        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
+        startActivity(intent)
+    }
+
     private fun confirmDeletePet(pet: Pet) {
         AlertDialog.Builder(this)
             .setTitle("Confirmation de suppression")
-            .setMessage("Êtes-vous sûr de vouloir supprimer cet animal ?")
+            .setMessage("Êtes-vous sûr de vouloir supprimer cet animal ?")
             .setPositiveButton("Oui") { _, _ -> deletePet(pet) }
             .setNegativeButton("Non", null)
             .show()
@@ -114,7 +121,6 @@ class PetsActivity : AppCompatActivity() {
 
     private fun deletePet(pet: Pet) {
         val petApi = RetrofitClient.instance.create(PetApi::class.java)
-
 
         pet.id?.let {
             petApi.deletePet(it).enqueue(object : Callback<Void> {

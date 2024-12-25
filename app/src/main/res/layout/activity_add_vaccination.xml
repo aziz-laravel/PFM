@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Spinner
+        android:id="@+id/spinnerSelectPet"
+        android:layout_width="379dp"
+        android:layout_height="56dp" />
+
+    <EditText
+        android:id="@+id/etVaccinationName"
+        android:layout_width="374dp"
+        android:layout_height="92dp"
+        android:hint="Vaccination Name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etDateAdministered"
+        android:layout_width="374dp"
+        android:layout_height="92dp"
+        android:hint="Date Administered"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/etNextDueDate"
+        android:layout_width="377dp"
+        android:layout_height="88dp"
+        android:hint="Next Due Date"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/etVeterinarian"
+        android:layout_width="370dp"
+        android:layout_height="62dp"
+        android:hint="Veterinarian" />
+
+    <EditText
+        android:id="@+id/etNotes"
+        android:layout_width="377dp"
+        android:layout_height="74dp"
+        android:hint="Notes" />
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="377dp"
+        android:layout_height="74dp"
+        android:hint="Description"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btnSaveVaccination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Vaccination" />
+</LinearLayout>

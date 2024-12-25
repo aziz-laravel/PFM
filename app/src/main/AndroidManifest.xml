@@ -39,6 +39,37 @@
 
 
         <activity
+            android:name=".VaccinationsActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".AddVaccinationActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".EditVaccinationActivity"
+            android:exported="true">
+        </activity>
+
+
+        <activity
+            android:name=".AddMedicationActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".EditMedicationActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".MedicationsActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".EditPetActivity"
             android:exported="true">
         </activity>

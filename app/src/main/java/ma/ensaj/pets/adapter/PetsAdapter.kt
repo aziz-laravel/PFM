@@ -12,7 +12,8 @@ import ma.ensaj.pets.dto.Pet
 class PetsAdapter(
     private var petsList: List<Pet>,
     private val onEditClick: (Pet) -> Unit,
-    private val onDeleteClick: (Pet) -> Unit
+    private val onDeleteClick: (Pet) -> Unit,
+    private val onPetClick: (Pet) -> Unit // Ajout de la fonction pour gérer le clic sur l'animal
 ) : RecyclerView.Adapter<PetsAdapter.PetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetViewHolder {
@@ -42,10 +43,17 @@ class PetsAdapter(
             nameTextView.text = pet.name
             typeTextView.text = pet.species
 
+            // Clic sur l'animal pour passer à l'activité des vaccinations
+            itemView.setOnClickListener {
+                onPetClick(pet) // Appelle la fonction qui passera à VaccinationsActivity
+            }
+
+            // Gérer le clic pour modifier un animal
             editButton.setOnClickListener {
                 onEditClick(pet)
             }
 
+            // Gérer le clic pour supprimer un animal
             deleteButton.setOnClickListener {
                 onDeleteClick(pet)
             }
