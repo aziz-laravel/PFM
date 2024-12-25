@@ -4,11 +4,16 @@ import ma.ensaj.pets.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ma.ensaj.pets.dto.Pet
 
-class PetsAdapter(private var petsList: List<Pet>) : RecyclerView.Adapter<PetsAdapter.PetViewHolder>() {
+class PetsAdapter(
+    private var petsList: List<Pet>,
+    private val onEditClick: (Pet) -> Unit,
+    private val onDeleteClick: (Pet) -> Unit
+) : RecyclerView.Adapter<PetsAdapter.PetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pet, parent, false)
@@ -27,13 +32,23 @@ class PetsAdapter(private var petsList: List<Pet>) : RecyclerView.Adapter<PetsAd
         notifyDataSetChanged()
     }
 
-    class PetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class PetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.petNameTextView)
         private val typeTextView: TextView = itemView.findViewById(R.id.petTypeTextView)
+        private val editButton: Button = itemView.findViewById(R.id.editButton)
+        private val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
 
         fun bind(pet: Pet) {
             nameTextView.text = pet.name
             typeTextView.text = pet.species
+
+            editButton.setOnClickListener {
+                onEditClick(pet)
+            }
+
+            deleteButton.setOnClickListener {
+                onDeleteClick(pet)
+            }
         }
     }
 }

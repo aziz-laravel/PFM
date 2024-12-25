@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -34,34 +35,33 @@ class PetsActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // Initialiser le SessionManager
         sessionManager = SessionManager(this)
         val ownerId = sessionManager.fetchUserId()
 
-        // Vérifier si l'utilisateur est connecté
         if (ownerId == -1L || sessionManager.fetchAuthToken() == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
 
-        Log.d("userid", "${ownerId}")
+        Log.d("userid", "$ownerId")
 
         setupViews()
         loadPets(ownerId)
-
     }
 
     private fun setupViews() {
         petsRecyclerView = findViewById(R.id.petsRecyclerView)
         addPetButton = findViewById(R.id.addPetButton)
 
-        // Configuration du RecyclerView
         petsRecyclerView.layoutManager = LinearLayoutManager(this)
-        petsAdapter = PetsAdapter(emptyList())
+        petsAdapter = PetsAdapter(
+            petsList = emptyList(),
+            onEditClick = { pet -> navigateToEditPet(pet) },
+            onDeleteClick = { pet -> confirmDeletePet(pet) }
+        )
         petsRecyclerView.adapter = petsAdapter
 
-        // Configuration du bouton d'ajout
         addPetButton.setOnClickListener {
             val intent = Intent(this, AddPetActivity::class.java)
             startActivity(intent)
@@ -73,8 +73,6 @@ class PetsActivity : AppCompatActivity() {
 
         petApi.getPetsByOwnerId(ownerId).enqueue(object : Callback<List<Pet>> {
             override fun onResponse(call: Call<List<Pet>>, response: Response<List<Pet>>) {
-                Log.d("PetsActivity", "Response code: ${response.code()}")
-                Log.d("PetsActivity", "Response headers: ${response.headers()}")
                 if (response.isSuccessful) {
                     val petsList = response.body()
                     if (petsList != null) {
@@ -83,33 +81,59 @@ class PetsActivity : AppCompatActivity() {
                         Toast.makeText(this@PetsActivity, "No pets found", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // Gérer les erreurs d'authentification
                     if (response.code() == 401) {
-                        // Token expiré ou invalide
                         sessionManager.clearSession()
                         startActivity(Intent(this@PetsActivity, LoginActivity::class.java))
                         finish()
                     } else {
-                        Toast.makeText(
-                            this@PetsActivity,
-                            "Failed to load pets: ${response.body()}, ${ownerId}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@PetsActivity, "Failed to load pets", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             override fun onFailure(call: Call<List<Pet>>, t: Throwable) {
-                Toast.makeText(
-                    this@PetsActivity,
-                    "Network error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@PetsActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Option : Ajouter un menu pour la déconnexion
+    private fun navigateToEditPet(pet: Pet) {
+        val intent = Intent(this, EditPetActivity::class.java)
+        intent.putExtra("PET_ID", pet.id)
+        startActivity(intent)
+    }
+
+    private fun confirmDeletePet(pet: Pet) {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmation de suppression")
+            .setMessage("Êtes-vous sûr de vouloir supprimer cet animal ?")
+            .setPositiveButton("Oui") { _, _ -> deletePet(pet) }
+            .setNegativeButton("Non", null)
+            .show()
+    }
+
+    private fun deletePet(pet: Pet) {
+        val petApi = RetrofitClient.instance.create(PetApi::class.java)
+
+
+        pet.id?.let {
+            petApi.deletePet(it).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@PetsActivity, "Animal supprimé", Toast.LENGTH_SHORT).show()
+                        loadPets(sessionManager.fetchUserId())
+                    } else {
+                        Toast.makeText(this@PetsActivity, "Échec de la suppression", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Toast.makeText(this@PetsActivity, "Erreur réseau : ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true

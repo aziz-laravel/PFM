@@ -39,6 +39,11 @@
 
 
         <activity
+            android:name=".EditPetActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".PetsActivity"
             android:exported="true">
         </activity>
