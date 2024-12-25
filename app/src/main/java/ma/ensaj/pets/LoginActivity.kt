@@ -1,6 +1,9 @@
 package ma.ensaj.pets
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -9,6 +12,7 @@ import ma.ensaj.pets.api.AuthApi
 import ma.ensaj.pets.config.RetrofitClient
 import ma.ensaj.pets.dto.AuthResponse
 import ma.ensaj.pets.dto.LoginRequest
+import ma.ensaj.pets.session.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,10 +21,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var emailInput: EditText
     private lateinit var passwordInput: EditText
     private lateinit var loginButton: Button
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        sessionManager = SessionManager(this)
+
+        // Si l'utilisateur est déjà connecté, redirigez directement vers PetsActivity
+        if (sessionManager.fetchAuthToken() != null) {
+            startActivity(Intent(this, PetsActivity::class.java))
+            finish()
+            return
+        }
 
         emailInput = findViewById(R.id.emailInput)
         passwordInput = findViewById(R.id.passwordInput)
@@ -46,7 +60,19 @@ class LoginActivity : AppCompatActivity() {
         authApi.login(loginRequest).enqueue(object : Callback<AuthResponse> {
             override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                 if (response.isSuccessful && response.body() != null) {
-                    Toast.makeText(this@LoginActivity, "login successful", Toast.LENGTH_SHORT).show()
+                    val authResponse = response.body()!!
+                    Log.d("LoginActivity", "Response code: ${response.code()}")
+                    Log.d("LoginActivity", "Response headers: ${response.headers()}")
+                    // Sauvegarder les informations de session
+                    sessionManager.saveAuthToken(authResponse.token)
+                    sessionManager.saveUserId(authResponse.userId)
+
+                    // Configurer le client Retrofit avec le token
+                    RetrofitClient.updateToken(authResponse.token)
+
+                    val intent = Intent(this@LoginActivity, PetsActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this@LoginActivity, "Login failed", Toast.LENGTH_SHORT).show()
                 }
