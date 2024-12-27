@@ -48,8 +48,11 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.glide)
+    implementation(libs.cardview)
     implementation(libs.threetenabp)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

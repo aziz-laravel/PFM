@@ -70,7 +70,9 @@ class LoginActivity : AppCompatActivity() {
                     // Configurer le client Retrofit avec le token
                     RetrofitClient.updateToken(authResponse.token)
 
-                    val intent = Intent(this@LoginActivity, PetsActivity::class.java)
+                    //val intent = Intent(this@LoginActivity, PetsActivity::class.java)
+                    //val intent = Intent(this@LoginActivity, UserProfileActivity::class.java)
+                    val intent = Intent(this@LoginActivity, ProductActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {

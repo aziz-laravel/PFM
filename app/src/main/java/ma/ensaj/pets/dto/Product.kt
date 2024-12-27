@@ -1,7 +1,7 @@
 package ma.ensaj.pets.dto
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 
 data class Product(
     val id: Long? = null,
