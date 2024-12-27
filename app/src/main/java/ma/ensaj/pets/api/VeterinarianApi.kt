@@ -8,17 +8,17 @@ import retrofit2.http.*
 interface VeterinarianApi {
 
     // Ajouter un vétérinaire
-    @POST("/veterinarians")
+    @POST("veterinarians")
     fun createVeterinarian(
         @Body veterinarian: Veterinarian
     ): Call<Veterinarian>
 
     // Tester la disponibilité du contrôleur vétérinaire
-    @GET("/veterinarians/test")
+    @GET("veterinarians/test")
     fun test(): Call<String>
 
     // Récupérer les vétérinaires à proximité d'une localisation donnée
-    @GET("/veterinarians/nearby")
+    @GET("veterinarians/nearby")
     fun getNearbyVeterinarians(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
@@ -26,7 +26,7 @@ interface VeterinarianApi {
     ): Call<List<VetLocationDTO>>
 
     // Récupérer les vétérinaires d'urgence à proximité d'une localisation donnée
-    @GET("/veterinarians/emergency")
+    @GET("veterinarians/emergency")
     fun getNearbyEmergencyVeterinarians(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
@@ -34,26 +34,26 @@ interface VeterinarianApi {
     ): Call<List<VetLocationDTO>>
 
     // Récupérer les vétérinaires par ville
-    @GET("/veterinarians/city/{city}")
+    @GET("veterinarians/city/{city}")
     fun getVeterinariansByCity(
         @Path("city") city: String
     ): Call<List<Veterinarian>>
 
     // Récupérer un vétérinaire par son ID
-    @GET("/veterinarians/{id}")
+    @GET("veterinarians/{id}")
     fun getVeterinarian(
         @Path("id") id: Long
     ): Call<Veterinarian>
 
     // Mettre à jour les informations d'un vétérinaire
-    @PUT("/veterinarians/{id}")
+    @PUT("veterinarians/{id}")
     fun updateVeterinarian(
         @Path("id") id: Long,
         @Body veterinarianDetails: Veterinarian
     ): Call<Veterinarian>
 
     // Supprimer un vétérinaire par son ID
-    @DELETE("/veterinarians/{id}")
+    @DELETE("veterinarians/{id}")
     fun deleteVeterinarian(
         @Path("id") id: Long
     ): Call<Void>

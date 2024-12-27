@@ -4,28 +4,30 @@ import android.util.Log
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.threeten.bp.LocalDateTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.1.53:8080/api/"
+    private const val BASE_URL = "http://192.168.1.33:8080/api/"
     private var token: String? = null
 
     fun updateToken(newToken: String) {
         token = newToken
     }
 
+    // Créer le Gson avec l'adaptateur pour LocalDateTime
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+        .create()
+
     val instance: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson)) // Utiliser le gson configuré
             .client(createOkHttpClient())
             .build()
     }
-
-    val gson = GsonBuilder()
-        .registerTypeAdapter(String::class.java, LocalDateTimeAdapter())
-        .create()
 
     private fun createOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
@@ -45,8 +47,8 @@ object RetrofitClient {
                 level = HttpLoggingInterceptor.Level.BODY
             })
             .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS // Voir les headers complets
-        })
+                level = HttpLoggingInterceptor.Level.HEADERS
+            })
             .build()
     }
 }

@@ -59,7 +59,7 @@ class PetsActivity : AppCompatActivity() {
             petsList = emptyList(),
             onEditClick = { pet -> navigateToEditPet(pet) },
             onDeleteClick = { pet -> confirmDeletePet(pet) },
-            onPetClick = { pet -> navigateToVaccinations(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
+            onPetClick = { pet -> navigateToAppointments(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
         )
         petsRecyclerView.adapter = petsAdapter
 
@@ -105,7 +105,19 @@ class PetsActivity : AppCompatActivity() {
     }
 
     private fun navigateToVaccinations(pet: Pet) {
+        val intent = Intent(this, VaccinationsActivity::class.java)
+        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
+        startActivity(intent)
+    }
+
+    private fun navigateToMedications(pet: Pet) {
         val intent = Intent(this, MedicationsActivity::class.java)
+        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
+        startActivity(intent)
+    }
+
+    private fun navigateToAppointments(pet: Pet) {
+        val intent = Intent(this, AppointmentsActivity::class.java)
         intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
         startActivity(intent)
     }
