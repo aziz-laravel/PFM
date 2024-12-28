@@ -18,6 +18,8 @@ threetenabp = "1.4.6"
 gson2="2.10"
 glide = "4.15.1"
 cardview = "1.0.0"
+googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,7 +40,12 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson2" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version = "4.15.1" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+google-maps = "com.google.android.gms:play-services-maps:18.1.0"
+play-services-location = { module = "com.google.android.gms:play-services-location", version = "21.0.1" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }
 

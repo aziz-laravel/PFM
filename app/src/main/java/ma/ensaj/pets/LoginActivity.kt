@@ -72,7 +72,8 @@ class LoginActivity : AppCompatActivity() {
 
                     //val intent = Intent(this@LoginActivity, PetsActivity::class.java)
                     //val intent = Intent(this@LoginActivity, UserProfileActivity::class.java)
-                    val intent = Intent(this@LoginActivity, ProductActivity::class.java)
+                    //val intent = Intent(this@LoginActivity, ProductActivity::class.java)
+                    val intent = Intent(this@LoginActivity, MapsActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {

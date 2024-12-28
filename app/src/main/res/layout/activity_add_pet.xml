@@ -17,36 +17,36 @@
 
     <EditText
         android:id="@+id/nameInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="377dp"
+        android:layout_height="90dp"
         android:hint="Name"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/speciesInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="385dp"
+        android:layout_height="109dp"
         android:hint="Species"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/breedInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="377dp"
+        android:layout_height="74dp"
         android:hint="Breed"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/colorInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="380dp"
+        android:layout_height="74dp"
         android:hint="Color"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/descriptionInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="372dp"
+        android:layout_height="87dp"
         android:hint="Description"
         android:inputType="textMultiLine" />
 
