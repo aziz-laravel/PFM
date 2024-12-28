@@ -3,14 +3,17 @@ package ma.ensaj.pets
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ma.ensaj.pets.adapter.PetsAdapter
@@ -22,49 +25,59 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PetsActivity : AppCompatActivity() {
+class PetsAppointmentsFragment : Fragment() {
     private lateinit var petsRecyclerView: RecyclerView
     private lateinit var addPetButton: Button
     private lateinit var petsAdapter: PetsAdapter
     private lateinit var sessionManager: SessionManager
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pets)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate le layout pour ce fragment
+        return inflater.inflate(R.layout.fragment_pets_appointments, container, false)
+    }
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        sessionManager = SessionManager(this)
+        // Appeler setHasOptionsMenu pour indiquer que ce fragment a un menu
+        setHasOptionsMenu(true)
+
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        (activity as HomeActivity).setSupportActionBar(toolbar)
+
+        sessionManager = SessionManager(requireContext())
         val ownerId = sessionManager.fetchUserId()
 
         if (ownerId == -1L || sessionManager.fetchAuthToken() == null) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            requireActivity().finish()
             return
         }
 
         Log.d("userid", "$ownerId")
 
-        setupViews()
+        setupViews(view) // Passer 'view' ici
         loadPets(ownerId)
     }
 
-    private fun setupViews() {
-        petsRecyclerView = findViewById(R.id.petsRecyclerView)
-        addPetButton = findViewById(R.id.addPetButton)
+    private fun setupViews(view: View) {
+        petsRecyclerView = view.findViewById(R.id.petsRecyclerView)
+        addPetButton = view.findViewById(R.id.addPetButton)
 
-        petsRecyclerView.layoutManager = LinearLayoutManager(this)
+        petsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         petsAdapter = PetsAdapter(
             petsList = emptyList(),
             onEditClick = { pet -> navigateToEditPet(pet) },
             onDeleteClick = { pet -> confirmDeletePet(pet) },
-            onPetClick = { pet -> navigateToAppointments(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
+            onPetClick = { pet -> navigateToAppointments(pet) }
         )
         petsRecyclerView.adapter = petsAdapter
 
         addPetButton.setOnClickListener {
-            val intent = Intent(this, AddPetActivity::class.java)
+            val intent = Intent(requireContext(), AddPetActivity::class.java)
             startActivity(intent)
         }
     }
@@ -79,51 +92,39 @@ class PetsActivity : AppCompatActivity() {
                     if (petsList != null) {
                         petsAdapter.updatePetsList(petsList)
                     } else {
-                        Toast.makeText(this@PetsActivity, "No pets found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "No pets found", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     if (response.code() == 401) {
                         sessionManager.clearSession()
-                        startActivity(Intent(this@PetsActivity, LoginActivity::class.java))
-                        finish()
+                        startActivity(Intent(requireContext(), LoginActivity::class.java))
+                        requireActivity().finish()
                     } else {
-                        Toast.makeText(this@PetsActivity, "Failed to load pets", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to load pets", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             override fun onFailure(call: Call<List<Pet>>, t: Throwable) {
-                Toast.makeText(this@PetsActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun navigateToEditPet(pet: Pet) {
-        val intent = Intent(this, EditPetActivity::class.java)
+        val intent = Intent(requireContext(), EditPetActivity::class.java)
         intent.putExtra("PET_ID", pet.id)
         startActivity(intent)
     }
 
-    private fun navigateToVaccinations(pet: Pet) {
-        val intent = Intent(this, VaccinationsActivity::class.java)
-        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
-        startActivity(intent)
-    }
-
-    private fun navigateToMedications(pet: Pet) {
-        val intent = Intent(this, MedicationsActivity::class.java)
-        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
-        startActivity(intent)
-    }
-
     private fun navigateToAppointments(pet: Pet) {
-        val intent = Intent(this, AppointmentsActivity::class.java)
-        intent.putExtra("PET_ID", pet.id) // Passez l'ID de l'animal à VaccinationsActivity
+        val intent = Intent(requireContext(), AppointmentsActivity::class.java)
+        intent.putExtra("PET_ID", pet.id)
         startActivity(intent)
     }
 
     private fun confirmDeletePet(pet: Pet) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Confirmation de suppression")
             .setMessage("Êtes-vous sûr de vouloir supprimer cet animal ?")
             .setPositiveButton("Oui") { _, _ -> deletePet(pet) }
@@ -138,23 +139,22 @@ class PetsActivity : AppCompatActivity() {
             petApi.deletePet(it).enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@PetsActivity, "Animal supprimé", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Animal supprimé", Toast.LENGTH_SHORT).show()
                         loadPets(sessionManager.fetchUserId())
                     } else {
-                        Toast.makeText(this@PetsActivity, "Échec de la suppression", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Échec de la suppression", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Toast.makeText(this@PetsActivity, "Erreur réseau : ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -169,7 +169,7 @@ class PetsActivity : AppCompatActivity() {
 
     private fun logout() {
         sessionManager.clearSession()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        requireActivity().finish()
     }
 }

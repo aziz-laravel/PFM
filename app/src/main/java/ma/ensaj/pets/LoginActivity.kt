@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Si l'utilisateur est déjà connecté, redirigez directement vers PetsActivity
         if (sessionManager.fetchAuthToken() != null) {
-            startActivity(Intent(this, PetsActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
             return
         }
@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
                     //val intent = Intent(this@LoginActivity, PetsActivity::class.java)
                     //val intent = Intent(this@LoginActivity, UserProfileActivity::class.java)
                     //val intent = Intent(this@LoginActivity, ProductActivity::class.java)
-                    val intent = Intent(this@LoginActivity, MapsActivity::class.java)
+                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
