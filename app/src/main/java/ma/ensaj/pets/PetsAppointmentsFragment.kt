@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ma.ensaj.pets.adapter.PetsAdapter
+import ma.ensaj.pets.adapter.PetsVaccMedsAdapter
 import ma.ensaj.pets.api.PetApi
 import ma.ensaj.pets.config.RetrofitClient
 import ma.ensaj.pets.dto.Pet
@@ -28,7 +30,7 @@ import retrofit2.Response
 class PetsAppointmentsFragment : Fragment() {
     private lateinit var petsRecyclerView: RecyclerView
     private lateinit var addPetButton: Button
-    private lateinit var petsAdapter: PetsAdapter
+    private lateinit var petsVaccMedsAdapter: PetsVaccMedsAdapter
     private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
@@ -45,8 +47,7 @@ class PetsAppointmentsFragment : Fragment() {
         // Appeler setHasOptionsMenu pour indiquer que ce fragment a un menu
         setHasOptionsMenu(true)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        (activity as HomeActivity).setSupportActionBar(toolbar)
+        val backArrow = view.findViewById<ImageView>(R.id.imageView6)
 
         sessionManager = SessionManager(requireContext())
         val ownerId = sessionManager.fetchUserId()
@@ -61,25 +62,23 @@ class PetsAppointmentsFragment : Fragment() {
 
         setupViews(view) // Passer 'view' ici
         loadPets(ownerId)
+
+        backArrow.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     private fun setupViews(view: View) {
         petsRecyclerView = view.findViewById(R.id.petsRecyclerView)
-        addPetButton = view.findViewById(R.id.addPetButton)
 
         petsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        petsAdapter = PetsAdapter(
+        petsVaccMedsAdapter = PetsVaccMedsAdapter(
             petsList = emptyList(),
-            onEditClick = { pet -> navigateToEditPet(pet) },
-            onDeleteClick = { pet -> confirmDeletePet(pet) },
-            onPetClick = { pet -> navigateToAppointments(pet) }
+            onPetClick = { pet -> navigateToAppointments(pet) },
+            context = requireContext()
         )
-        petsRecyclerView.adapter = petsAdapter
+        petsRecyclerView.adapter = petsVaccMedsAdapter
 
-        addPetButton.setOnClickListener {
-            val intent = Intent(requireContext(), AddPetActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun loadPets(ownerId: Long) {
@@ -90,7 +89,7 @@ class PetsAppointmentsFragment : Fragment() {
                 if (response.isSuccessful) {
                     val petsList = response.body()
                     if (petsList != null) {
-                        petsAdapter.updatePetsList(petsList)
+                        petsVaccMedsAdapter.updatePetsList(petsList)
                     } else {
                         Toast.makeText(requireContext(), "No pets found", Toast.LENGTH_SHORT).show()
                     }

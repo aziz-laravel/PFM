@@ -26,19 +26,18 @@ class ProductAdapter(private val onProductClick: (Product) -> Unit) :
     }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val nameTextView: TextView = itemView.findViewById(R.id.product_name)
-        private val priceTextView: TextView = itemView.findViewById(R.id.product_price)
+        private val nameTextView: TextView = itemView.findViewById(R.id.name)
+        private val priceTextView: TextView = itemView.findViewById(R.id.price)
         private val productImageView: ImageView = itemView.findViewById(R.id.product_image)
-
+        private val productBrand : TextView = itemView.findViewById(R.id.brand)
         fun bind(product: Product, onProductClick: (Product) -> Unit) {
             nameTextView.text = product.name
             priceTextView.text = product.price.toString()
+            productBrand.text = product.brand
 
             // Charger l'image avec Glide
             Glide.with(itemView.context)
-                .load(product.imageUrl) // URL de l'image
-                .placeholder(R.drawable.ic_launcher_background) // Image par défaut pendant le chargement
-                .error(R.drawable.ic_launcher_foreground) // Image en cas d'erreur de chargement
+                .load(product.imageUrl) // Image en cas d'erreur de chargement
                 .into(productImageView)
 
             itemView.setOnClickListener {

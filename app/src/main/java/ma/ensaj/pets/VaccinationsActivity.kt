@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,13 +27,15 @@ class VaccinationsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vaccinations)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         petId = intent.getLongExtra("PET_ID", 0) // Récupérer l'ID de l'animal passé via Intent
 
         recyclerView = findViewById(R.id.recyclerViewVaccinations)
         val addVaccinationButton: Button = findViewById(R.id.btnAddVaccination)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        vaccinationAdapter = VaccinationAdapter(emptyList(), ::onEditVaccination, ::onDeleteVaccination)
+        vaccinationAdapter = VaccinationAdapter(this,emptyList(), ::onEditVaccination, ::onDeleteVaccination)
         recyclerView.adapter = vaccinationAdapter
 
         addVaccinationButton.setOnClickListener {
@@ -42,6 +45,10 @@ class VaccinationsActivity : AppCompatActivity() {
         }
 
         loadVaccinations()
+
+        backArrow.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun loadVaccinations() {
@@ -49,7 +56,7 @@ class VaccinationsActivity : AppCompatActivity() {
         vaccinationApi.getVaccinations(petId).enqueue(object : Callback<List<Vaccination>> {
             override fun onResponse(call: Call<List<Vaccination>>, response: Response<List<Vaccination>>) {
                 if (response.isSuccessful) {
-                    vaccinationAdapter = VaccinationAdapter(response.body() ?: emptyList(), ::onEditVaccination, ::onDeleteVaccination)
+                    vaccinationAdapter = VaccinationAdapter(this@VaccinationsActivity, response.body() ?: emptyList(), ::onEditVaccination, ::onDeleteVaccination)
                     recyclerView.adapter = vaccinationAdapter
                 }
             }

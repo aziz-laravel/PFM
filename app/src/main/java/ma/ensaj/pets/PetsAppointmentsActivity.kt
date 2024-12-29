@@ -32,8 +32,6 @@ class PetsAppointmentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pets)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
         sessionManager = SessionManager(this)
         val ownerId = sessionManager.fetchUserId()
@@ -59,7 +57,8 @@ class PetsAppointmentsActivity : AppCompatActivity() {
             petsList = emptyList(),
             onEditClick = { pet -> navigateToEditPet(pet) },
             onDeleteClick = { pet -> confirmDeletePet(pet) },
-            onPetClick = { pet -> navigateToAppointments(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
+            onPetClick = { pet -> navigateToAppointments(pet) },
+            context = this// Ajoutez cette ligne pour gérer le clic sur un animal
         )
         petsRecyclerView.adapter = petsAdapter
 

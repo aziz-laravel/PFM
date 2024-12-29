@@ -27,6 +27,7 @@ class UserProfileFragment : Fragment() {
     private lateinit var editProfileButton: Button
     private lateinit var sessionManager: SessionManager
 
+    private lateinit var logOutButton: Button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,6 +45,7 @@ class UserProfileFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         val userId = sessionManager.fetchUserId()
 
+
         if (userId != null) {
             loadUserProfile(userId)
         } else {
@@ -56,6 +58,10 @@ class UserProfileFragment : Fragment() {
             intent.putExtra("USER_ID", userId)
             startActivity(intent)
         }
+
+        logOutButton.setOnClickListener{
+            logout()
+        }
     }
 
     private fun initializeViews(view: View) {
@@ -65,6 +71,7 @@ class UserProfileFragment : Fragment() {
         phoneNumberTextView = view.findViewById(R.id.phoneNumberTextView)
         addressTextView = view.findViewById(R.id.addressTextView)
         editProfileButton = view.findViewById(R.id.editProfileButton)
+        logOutButton = view.findViewById(R.id.logoutButton)
     }
 
     private fun loadUserProfile(userId: Long) {
@@ -96,5 +103,12 @@ class UserProfileFragment : Fragment() {
         emailTextView.text = user.email
         phoneNumberTextView.text = user.phoneNumber
         addressTextView.text = user.address
+    }
+
+    private fun logout() {
+        sessionManager.clearSession()
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 }

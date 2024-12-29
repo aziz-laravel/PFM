@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.R.id.petDescriptionEditText
@@ -26,6 +27,8 @@ class EditPetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pet)
+
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
 
         petId = intent.getLongExtra("PET_ID", 0L)
         if (petId == 0L) {
@@ -52,6 +55,10 @@ class EditPetActivity : AppCompatActivity() {
                 color = petColorEditText.text.toString()
             )
             updatePetDetails(updatedPet)
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

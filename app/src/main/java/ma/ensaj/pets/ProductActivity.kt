@@ -28,6 +28,7 @@ class ProductActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+
         // Initialisation de l'adaptateur avec une fonction pour gérer le clic sur un produit
         adapter = ProductAdapter { product ->
             // Naviguer vers ProductDetailsActivity avec l'ID du produit
@@ -46,6 +47,7 @@ class ProductActivity : AppCompatActivity() {
         productApi.getAllProducts().enqueue(object : Callback<List<Product>> {
             override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
                 if (response.isSuccessful) {
+                    Log.d("product", "response.body()")
                     val productList = response.body()
                     if (productList != null) {
                         products.clear()

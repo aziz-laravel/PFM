@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,8 @@ class AddVaccinationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_vaccination)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         petId = intent.getLongExtra("PET_ID", 0)
 
         petSpinner = findViewById(R.id.spinnerSelectPet)
@@ -39,6 +42,10 @@ class AddVaccinationActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSaveVaccination).setOnClickListener {
             saveVaccination()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

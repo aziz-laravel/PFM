@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.AppointmentApi
@@ -35,12 +36,18 @@ class AddAppointmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_appointment)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         petId = intent.getLongExtra("PET_ID", 0)
         initializeViews()
         setupDateTimePicker()
 
         saveButton.setOnClickListener {
             saveAppointment()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

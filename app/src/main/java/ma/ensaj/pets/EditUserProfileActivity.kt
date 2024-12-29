@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.UserApi
@@ -28,6 +29,8 @@ class EditUserProfileActivity : AppCompatActivity() {
 
         initializeViews()
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         userId = intent.getLongExtra("USER_ID", -1)
         if (userId != -1L) {
             loadUserDetails(userId)
@@ -38,6 +41,10 @@ class EditUserProfileActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             updateUserProfile()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

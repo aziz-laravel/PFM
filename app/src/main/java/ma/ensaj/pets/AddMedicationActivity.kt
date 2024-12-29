@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.MedicationApi
@@ -27,6 +28,7 @@ class AddMedicationActivity : AppCompatActivity() {
 
         petId = intent.getLongExtra("PET_ID", 0)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
         nameEditText = findViewById(R.id.etMedicationName)
         startDateEditText = findViewById(R.id.etStartDate)
         endDateEditText = findViewById(R.id.etEndDate)
@@ -36,6 +38,10 @@ class AddMedicationActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSaveMedication).setOnClickListener {
             saveMedication()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

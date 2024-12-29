@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.VaccinationApi
@@ -25,7 +26,9 @@ class EditVaccinationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_vaccination)
+        setContentView(R.layout.activity_edit_vaccination)
+
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
 
         // Récupérer l'ID de l'animal et l'ID de la vaccination à modifier
         petId = intent.getLongExtra("PET_ID", 0)
@@ -44,6 +47,10 @@ class EditVaccinationActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSaveVaccination).setOnClickListener {
             updateVaccination()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.MedicationApi
@@ -25,8 +26,9 @@ class EditMedicationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_medication)
+        setContentView(R.layout.activity_edit_medication)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
         petId = intent.getLongExtra("PET_ID", 0)
         medicationId = intent.getLongExtra("MEDICATION_ID", 0)
 
@@ -41,6 +43,10 @@ class EditMedicationActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSaveMedication).setOnClickListener {
             updateMedication()
+        }
+
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

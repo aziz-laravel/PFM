@@ -1,8 +1,10 @@
 package ma.ensaj.pets
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.PetApi
@@ -27,6 +29,8 @@ class AddPetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pet)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         nameInput = findViewById(R.id.nameInput)
         speciesInput = findViewById(R.id.speciesInput)
         breedInput = findViewById(R.id.breedInput)
@@ -36,6 +40,9 @@ class AddPetActivity : AppCompatActivity() {
 
         addPetButton.setOnClickListener {
             addPet()
+        }
+        backArrow.setOnClickListener {
+            onBackPressed()
         }
     }
 

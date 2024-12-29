@@ -3,6 +3,7 @@ package ma.ensaj.pets
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,13 +27,15 @@ class AppointmentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_appointments)
 
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
+
         petId = intent.getLongExtra("PET_ID", 0)
 
         recyclerView = findViewById(R.id.recyclerViewAppointments)
         val addAppointmentButton: Button = findViewById(R.id.btnAddAppointment)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        appointmentAdapter = AppointmentAdapter(emptyList(), ::onEditAppointment, ::onDeleteAppointment)
+        appointmentAdapter = AppointmentAdapter(this, emptyList(), ::onEditAppointment, ::onDeleteAppointment)
         recyclerView.adapter = appointmentAdapter
 
         addAppointmentButton.setOnClickListener {
@@ -42,6 +45,11 @@ class AppointmentsActivity : AppCompatActivity() {
         }
 
         loadAppointments()
+
+        backArrow.setOnClickListener {
+            onBackPressed()
+        }
+
     }
 
     private fun loadAppointments() {
@@ -49,7 +57,7 @@ class AppointmentsActivity : AppCompatActivity() {
         appointmentApi.getPetAppointments(petId).enqueue(object : Callback<List<Appointment>> {
             override fun onResponse(call: Call<List<Appointment>>, response: Response<List<Appointment>>) {
                 if (response.isSuccessful) {
-                    appointmentAdapter = AppointmentAdapter(response.body() ?: emptyList(), ::onEditAppointment, ::onDeleteAppointment)
+                    appointmentAdapter = AppointmentAdapter(this@AppointmentsActivity,response.body() ?: emptyList(), ::onEditAppointment, ::onDeleteAppointment)
                     recyclerView.adapter = appointmentAdapter
                 }
             }

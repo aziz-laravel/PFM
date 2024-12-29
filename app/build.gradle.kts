@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.threetenabp)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation(libs.circleimageview)
     implementation(libs.google.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

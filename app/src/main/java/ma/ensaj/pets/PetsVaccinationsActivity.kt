@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
@@ -14,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ma.ensaj.pets.adapter.PetsAdapter
+import ma.ensaj.pets.adapter.PetsVaccMedsAdapter
 import ma.ensaj.pets.api.PetApi
 import ma.ensaj.pets.config.RetrofitClient
 import ma.ensaj.pets.dto.Pet
@@ -24,16 +26,14 @@ import retrofit2.Response
 
 class PetsVaccinationsActivity : AppCompatActivity() {
     private lateinit var petsRecyclerView: RecyclerView
-    private lateinit var addPetButton: Button
-    private lateinit var petsAdapter: PetsAdapter
+    private lateinit var petsVaccMedsAdapter: PetsVaccMedsAdapter
     private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pets)
+        setContentView(R.layout.activity_pets_vacc_meds)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        val backArrow = findViewById<ImageView>(R.id.imageView6)
 
         sessionManager = SessionManager(this)
         val ownerId = sessionManager.fetchUserId()
@@ -48,25 +48,23 @@ class PetsVaccinationsActivity : AppCompatActivity() {
 
         setupViews()
         loadPets(ownerId)
+
+        backArrow.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupViews() {
         petsRecyclerView = findViewById(R.id.petsRecyclerView)
-        addPetButton = findViewById(R.id.addPetButton)
 
         petsRecyclerView.layoutManager = LinearLayoutManager(this)
-        petsAdapter = PetsAdapter(
+        petsVaccMedsAdapter = PetsVaccMedsAdapter(
             petsList = emptyList(),
-            onEditClick = { pet -> navigateToEditPet(pet) },
-            onDeleteClick = { pet -> confirmDeletePet(pet) },
-            onPetClick = { pet -> navigateToVaccinations(pet) } // Ajoutez cette ligne pour gérer le clic sur un animal
+            onPetClick = { pet -> navigateToVaccinations(pet) },
+            context = this// Ajoutez cette ligne pour gérer le clic sur un animal
         )
-        petsRecyclerView.adapter = petsAdapter
+        petsRecyclerView.adapter = petsVaccMedsAdapter
 
-        addPetButton.setOnClickListener {
-            val intent = Intent(this, AddPetActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun loadPets(ownerId: Long) {
@@ -77,7 +75,7 @@ class PetsVaccinationsActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val petsList = response.body()
                     if (petsList != null) {
-                        petsAdapter.updatePetsList(petsList)
+                        petsVaccMedsAdapter.updatePetsList(petsList)
                     } else {
                         Toast.makeText(this@PetsVaccinationsActivity, "No pets found", Toast.LENGTH_SHORT).show()
                     }

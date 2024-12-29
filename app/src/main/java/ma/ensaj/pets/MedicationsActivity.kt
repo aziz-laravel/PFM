@@ -28,10 +28,10 @@ class MedicationsActivity : AppCompatActivity() {
         petId = intent.getLongExtra("PET_ID", 0)
 
         recyclerView = findViewById(R.id.recyclerViewMedications)
-        val addMedicationButton: Button = findViewById(R.id.btnAddMedication)
+        val addMedicationButton: Button = findViewById(R.id.btnAddVaccination)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        medicationAdapter = MedicationAdapter(emptyList(), ::onEditMedication, ::onDeleteMedication)
+        medicationAdapter = MedicationAdapter(this, emptyList(), ::onEditMedication, ::onDeleteMedication)
         recyclerView.adapter = medicationAdapter
 
         addMedicationButton.setOnClickListener {
@@ -48,7 +48,7 @@ class MedicationsActivity : AppCompatActivity() {
         medicationApi.getMedications(petId).enqueue(object : Callback<List<Medication>> {
             override fun onResponse(call: Call<List<Medication>>, response: Response<List<Medication>>) {
                 if (response.isSuccessful) {
-                    medicationAdapter = MedicationAdapter(response.body() ?: emptyList(), ::onEditMedication, ::onDeleteMedication)
+                    medicationAdapter = MedicationAdapter(this@MedicationsActivity,response.body() ?: emptyList(), ::onEditMedication, ::onDeleteMedication)
                     recyclerView.adapter = medicationAdapter
                 }
             }
