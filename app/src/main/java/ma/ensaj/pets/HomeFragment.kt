@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ class HomeFragment : Fragment() {
     private lateinit var button4: Button
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var sessionManager: SessionManager
+    private lateinit var help: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +51,7 @@ class HomeFragment : Fragment() {
         button3 = view.findViewById(R.id.button3)
         button4 = view.findViewById(R.id.button4)
         bottomNavigationView = view.findViewById(R.id.bottomNavigationView)
-
+        help = view.findViewById(R.id.imageView2)
         sessionManager = SessionManager(requireContext())
         val userId = sessionManager.fetchUserId()
 
@@ -59,7 +61,7 @@ class HomeFragment : Fragment() {
         button2.setOnClickListener { openActivity(AddPetActivity::class.java) }
         button3.setOnClickListener { openActivity(PetsVaccinationsActivity::class.java) }
         button4.setOnClickListener { openActivity(PetsMedicationsActivity::class.java) }
-
+        help.setOnClickListener{ openActivity(HelpActivity::class.java)}
         // Gestion des clics sur la barre de navigation
         bottomNavigationView.setOnItemSelectedListener { item ->
             (activity as HomeActivity).onNavigationItemSelected(item)

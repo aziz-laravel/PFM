@@ -3,9 +3,12 @@ package ma.ensaj.pets
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ma.ensaj.pets.api.AppointmentApi
@@ -24,13 +27,15 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class AddAppointmentActivity : AppCompatActivity() {
 
-    private lateinit var vetIdInput: EditText
+    //private lateinit var vetIdInput: EditText
+    private lateinit var vetSpinner: Spinner
     private lateinit var dateTimeInput: EditText
     private lateinit var reasonInput: EditText
     private lateinit var notesInput: EditText
     private lateinit var saveButton: Button
     private var petId: Long = 0
     private var selectedDateTime: LocalDateTime? = null
+    private var veterinarians: List<Veterinarian> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,7 @@ class AddAppointmentActivity : AppCompatActivity() {
         initializeViews()
         setupDateTimePicker()
 
+        loadVeterinarians("El Jadida")
         saveButton.setOnClickListener {
             saveAppointment()
         }
@@ -52,7 +58,8 @@ class AddAppointmentActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        vetIdInput = findViewById(R.id.vetIdInput)
+        //vetIdInput = findViewById(R.id.vetIdInput)
+        vetSpinner = findViewById(R.id.vetSpinner)
         dateTimeInput = findViewById(R.id.dateTimeInput)
         reasonInput = findViewById(R.id.reasonInput)
         notesInput = findViewById(R.id.notesInput)
@@ -96,7 +103,13 @@ class AddAppointmentActivity : AppCompatActivity() {
     }
 
     private fun saveAppointment() {
-        val vetId = vetIdInput.text.toString().toLongOrNull()
+        //val vetId = vetIdInput.text.toString().toLongOrNull()
+        val selectedVetIndex = vetSpinner.selectedItemPosition
+        if (selectedVetIndex == AdapterView.INVALID_POSITION) {
+            Toast.makeText(this, "Please select a veterinarian", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val vetId = veterinarians[selectedVetIndex].id
         val reason = reasonInput.text.toString()
         val notes = notesInput.text.toString()
 
@@ -135,6 +148,41 @@ class AddAppointmentActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun loadVeterinarians(city: String) {
+        val vetApi = RetrofitClient.instance.create(VeterinarianApi::class.java)
+
+        vetApi.getVeterinariansByCity(city).enqueue(object : Callback<List<Veterinarian>> {
+            override fun onResponse(call: Call<List<Veterinarian>>, response: Response<List<Veterinarian>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    veterinarians = response.body()!!
+                    populateVetSpinner()
+                } else {
+                    Toast.makeText(
+                        this@AddAppointmentActivity,
+                        "Failed to load veterinarians: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Veterinarian>>, t: Throwable) {
+                Toast.makeText(
+                    this@AddAppointmentActivity,
+                    "Error loading veterinarians: ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
+    private fun populateVetSpinner() {
+        val vetNames = mutableListOf("Please select a veterinarian")
+        vetNames.addAll(veterinarians.map { it.lastName })
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, vetNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        vetSpinner.adapter = adapter
     }
 
     private fun getVeterinarianAndCreateAppointment(vetId: Long, pet: Pet, reason: String, notes: String) {

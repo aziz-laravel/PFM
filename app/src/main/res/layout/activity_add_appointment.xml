@@ -38,14 +38,23 @@
         android:textSize="24sp"
         android:layout_marginBottom="4dp" />
 
-    <EditText
+    <Spinner
+        android:id="@+id/vetSpinner"
+        android:layout_width="324dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/spinner_background"
+        android:padding="12dp"
+        android:spinnerMode="dropdown" />
+
+    <!--<EditText
         android:id="@+id/vetIdInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Veterinarian ID"
         android:inputType="text"
         android:padding="12dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp" />-->
 
     <!-- Date and Time -->
     <TextView

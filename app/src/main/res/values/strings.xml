@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">PetScan</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string-array name="default_spinner_array">
+        <item>Select a vet</item>
+    </string-array>
+
 </resources>
